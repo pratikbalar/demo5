@@ -7,6 +7,7 @@ metadata:
   annotations:
 spec:
   releaseName: stable-bookstackapp
+  interval: 1m
   chart:
     spec:
       chart: bookstack
