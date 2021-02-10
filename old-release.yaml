@@ -4,9 +4,6 @@ kind: HelmRelease
 metadata:
   name: bookstackapp
   namespace: hihello
-  annotations:
-    fluxcd.io/automated: "false"
-    # filter.fluxcd.io/chart-image: glob:freeipa-*
 spec:
   releaseName: stable-bookstackapp
   chart:

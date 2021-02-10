@@ -74,6 +74,7 @@ yaml.explicit_start = True
 data = yaml.load(file_name)
 data['apiVersion'] = 'helm.toolkit.fluxcd.io/v2beta1'
 data['metadata']['annotations'] = None
+
 # if 'repository1' in fp.read():
 #     print("hello3")
 #     data['spec']['chart'] = record_to_add1
@@ -83,6 +84,8 @@ if 'git:' in fp.read():
 else:
     print("hello3 creating helm source")
     data['spec']['chart'] = record_to_add1
+
+# data['spec']['interval'] = '1m'
 # yaml.dump(data, sys.stdout)
 # stream = open(source, 'r')
 # data = yaml.load(stream)
