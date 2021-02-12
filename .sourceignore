@@ -1,0 +1,9 @@
+# exclude all
+/*
+
+# include deploy dir
+!/fluxv2
+
+# exclude files from fluxv2 dir
+#/fluxv2/**/eksctl.yaml
+#/fluxv2/**/charts
