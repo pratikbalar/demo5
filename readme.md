@@ -100,7 +100,7 @@ spec:
    interval: 1m
 ```
 
-and remove below stuff, as those are changed in new(fluxv2) api
+and remove below stuff from new release,if your old release had this, in new we dont need these, as those are changed in new(fluxv2) api
 
 ```
    helmVersion: v3
