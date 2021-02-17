@@ -6,7 +6,7 @@ import sys
 import yaml
 from pathlib import Path
 
-arg_parser = argparse.ArgumentParser( description = "Generate fluxV2 target_file file from fluxV1 source_file, also sourcefile for generated fluxv2 release as git-helm-source file" )
+arg_parser = argparse.ArgumentParser( description = "Generate fluxV2 target_file file from fluxV1 source_file, also sourcefile for generated fluxv2 release as git/helm-source file" )
 arg_parser.add_argument( "source_file" )
 arg_parser.add_argument( "target_file" )
 arg_parser.add_argument( "git_helm_file" )
@@ -15,17 +15,16 @@ arguments = arg_parser.parse_args()
 source = arguments.source_file
 target = arguments.target_file
 git_helm = arguments.git_helm_file
-# print( "Copying [{}] to [{}]".format(source, target) )
 
 fp = open(source, 'r')
 yaml = ruamel.yaml.YAML()
 yaml.preserve_quotes = True
 
-config, ind, bsi = ruamel.yaml.util.load_yaml_guess_indent(open(source))
-metadata, ind, bsi = ruamel.yaml.util.load_yaml_guess_indent(open(source))
+config1, ind, bsi = ruamel.yaml.util.load_yaml_guess_indent(open(source))
+config2, ind, bsi = ruamel.yaml.util.load_yaml_guess_indent(open(source))
 
-spec = config['spec']
-metadata = metadata['metadata']
+spec = config1['spec']
+metadata = config2['metadata']
 namespaceName = metadata['namespace']
 repoName = namespaceName + "-repository"
 if 'git:' in fp.read():
@@ -58,26 +57,27 @@ else:
     with open(git_helm, 'w') as f:
         yaml.dump(create_helm_source, f)
 
-# print(namespaceName)
-# print("heyyy")
-# if spec['chart']['repository'] in source:
-#     spec['chart']['spec']['chart'] = spec['chart']['name']
-# spec['chart']['name'] = 'Username'
-# spec['chart']['version'] = 'Password'
+
 fp = open(source, 'r')
 file_name = Path(source)
-# {'chart':{'spec':{'chart':'minio', 'version':'8.0.7'}}}
-# record_to_add1 = {'spec':{'chart':chartName, 'version': versionName, 'sourceRef':{'kind':'HelmRepository', 'name': repoName, 'namespace': namespaceName}}}
-# record_to_add2 = {'spec':{'chart':chartName, 'sourceRef':{'kind':'GitRepository', 'name': repoName, 'namespace': namespaceName}}}
 yaml = ruamel.yaml.YAML()
 yaml.explicit_start = True
 data = yaml.load(file_name)
 data['apiVersion'] = 'helm.toolkit.fluxcd.io/v2beta1'
 data['metadata']['annotations'] = None
+data['spec'].insert(1, 'interval','1m')
 
-# if 'repository1' in fp.read():
-#     print("hello3")
-#     data['spec']['chart'] = record_to_add1
+# del data['spec']['maxHistory']
+# del data['spec']['rollback']
+# del data['spec']['helmVersion']
+# del data['spec']['annotations']
+# if 'helmVersion:' in fp.read():
+#     del data['spec']['helmVersion']
+# if 'maxHistory:' in fp.read():
+#     del data['spec']['maxHistory']
+# if 'rollback:' in fp.read():
+#     del data['spec']['rollback']
+
 if 'git:' in fp.read():
     print("hello4 creating git source")
     data['spec']['chart'] = record_to_add2
@@ -85,25 +85,6 @@ else:
     print("hello3 creating helm source")
     data['spec']['chart'] = record_to_add1
 
-# data['spec']['interval'] = '1m'
-# yaml.dump(data, sys.stdout)
-# stream = open(source, 'r')
-# data = yaml.load(stream)
-# # if spec['chart']['repository'] in source:
-# #     spec['chart']['spec']['chart'] = spec['chart']['name']
-# data['apiVersion'] = 'helm.toolkit.fluxcd.io/v2beta1'
-# data['spec']['chart']['name'] = 'Username'
-# data['spec']['chart']['version'] = 'Password'
-
-# with open(source) as fp:
-#     data = yaml.load(fp)
-# for elem in data:
-#     print(elem)
-#     # if elem['repository'] == 'https://helm.min.io/':
-#     #      elem['version'] = 1234
-#     #      break  # no need to iterate further
-# yaml.dump(data, sys.stdout)
 with open(target, 'w') as fp:
     yaml.dump(data, fp)
-
 

@@ -69,6 +69,14 @@ flux create secret git flux-system \
     --url=ssh://git@github.com/dharmendrakariya/demo5 \
     --export > secret_flux-system.yaml
 ```
+but we can use ```ssh-keygen -t rsa``` command which allows us to create private/public key pair.
+
+add private and public key in secret-flux-system file and for github public fingerprint use belwo command
+
+```ssh-keyscan -t rsa github.com | tee github-key-temp | ssh-keygen -lf -```
+
+which will generate github-key-temp file, this command takes public fingerprint provided by [github](https://docs.github.com/en/github/authenticating-to-github/githubs-ssh-key-fingerprints). copy the content and paste it under known-host field in secret-flux-system file.
+
 
 ```kc apply -f fluxv2/flux-system/secret_flux-system.yaml```
 
@@ -93,7 +101,7 @@ example:
 
 python v1tov2.py old-release.yaml new-release.yaml git-source.yaml
 
-make sure you add 
+make sure you have 
 
 ```
 spec:
