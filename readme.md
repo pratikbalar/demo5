@@ -62,14 +62,14 @@ Create flux-system secret, which has deploy key identity.pub, which supposed to 
 
 note: add this key as soon as you create the secret, it supposed to be added before git_repo_sync creation, bcoz as soon as repo gets configured, it tries to sync it and if it doesn't find the key, it will remove those old deployments. (anyway no harm in adding it first)
 
-to generate the secret I used flux cli, it has command 
+to generate the secret we can use flux cli, it has command 
 
 ```
 flux create secret git flux-system \
     --url=ssh://git@github.com/dharmendrakariya/demo5 \
     --export > secret_flux-system.yaml
 ```
-but we can use ```ssh-keygen -t rsa``` command which allows us to create private/public key pair.
+but we ```should```  use  ```ssh-keygen -t rsa``` command which allows us to create private/public key pair.
 
 add private and public key in secret-flux-system file and for github public fingerprint use belwo command
 
