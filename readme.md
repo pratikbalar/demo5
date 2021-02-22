@@ -1,5 +1,18 @@
 ## This repo contains the migration demo from Fluxv1 to Fluxv2
 
+### Things need to be noted down beforehand migrations.	
+   - Make sure all the fluxv1 releases are deployed successfully, no pending operations should be there. Otherwise it will give you error like " UPGRADE FAILED:        another operation (install/upgrade/rollback) is in progress ", So no dirty phase is allowed.	
+   	
+   - Make sure you do not change the deployment as in namespace/name etc. As it will try to create new resources in defined, new, changed namespace, or with new,      defined name. Also it can conflict with the ingress over hostname because old release will be having the hostname and new will not get assigned hostname, so      redundancy will be there. Inshort no duplicacy, no redundancy, no major modifications, which might change the whole release against the old one are allowed.	
+   
+   - Make sure you have enough resources available, as in node CPU, Memory etc. Sudden load can make them hang.	
+   
+   - Make sure you have releases in defined namespace where deployments are deployed, otherwise it will give error like	
+   	"Helm install failed: rendered manifests contain a resource that already exists. Unable to continue with install:"	
+   	
+Migration Proccess should be performed in such a manner that all the deployed things, by the fluxv1 releases, controlled by the "Helm Operator" are getting handovered to the "Helm Controller" which will be handled by newly identical fluxv2 releases.	
+
+
 ### In order to perform the exercise execute the below commands and take care of the notes
 
 #### First we will run all the releases by the help of Fluxv1, for that
@@ -80,7 +93,8 @@ which will generate github-key-temp file, this command takes public fingerprint 
 
 ```kc apply -f fluxv2/flux-system/secret_flux-system.yaml```
 
-Apply crds
+Apply crds, named [install.yaml](https://github.com/fluxcd/flux2/releases)	
+note: we have renamed install.yaml to flux_toolkit_0.7.7.yaml
 
 ```kc apply -f fluxv2/flux-system/flux_toolkit_v0.7.7.yaml```
 
@@ -118,5 +132,14 @@ and remove below stuff from new release,if it took these from old release, as th
      retry: true
      maxRetries: 3
 ```
+Also, this python removes all annotations from metadata.annotations, make sure you add your required annotations (like in nginx case, you want to have nginx.class annotations) and let it leave the fluxv1 annotations.	
 
-After these changes you are good to go
+After these changes you are good to go	
+
+#### Handy Commands	
+
+kubectl -n freeipa get events --sort-by='{.lastTimestamp1}'	
+
+watch kubectl top node	
+
+watch kubectl get helmreleases.helm.toolkit.fluxcd.io -A
