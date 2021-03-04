@@ -113,7 +113,7 @@ I have python script v1tov2.py which takes three args, 1st the fluxv1 file which
 
 example:
 
-python v1tov2.py old-release.yaml new-release.yaml git-source.yaml
+`python v1tov2.py old-release.yaml new-release.yaml git-source.yaml`
 
 make sure you have 
 
@@ -137,9 +137,10 @@ Also, this python removes all annotations from metadata.annotations, make sure y
 After these changes you are good to go	
 
 #### Handy Commands	
-
+``bash
 kubectl -n freeipa get events --sort-by='{.lastTimestamp1}'	
 
 watch kubectl top node	
 
 watch kubectl get helmreleases.helm.toolkit.fluxcd.io -A
+```
